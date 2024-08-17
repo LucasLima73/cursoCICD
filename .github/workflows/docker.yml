@@ -16,6 +16,16 @@ jobs:
       with:
          username: lucaslima582
          password: Rammstein123@#
+
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v6.7.0
+      with:
+       context: .
+       file: ./Dockerfile   
+       push: true
+       tags: lucaslima582/go_ci:${{github.ref_name}}
+
+          
           
 
   
