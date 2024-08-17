@@ -38,15 +38,21 @@ jobs:
       run: go test -v main_test.go
 
   build:
-     needs: test
-     runs-on: ubuntu-latest
-     steps:
-      - uses: actions/checkout@v4
-      - name: Build
-        run: go build -v main.go
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
 
+    - name: Build
+      run: go build -v main.go
 
-  docker: 
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.3.6
+      with:
+        name: programa
+        path: main
+
+  docker:
     needs: build
     uses: ./.github/workflows/docker.yml
     secrets: inherit
