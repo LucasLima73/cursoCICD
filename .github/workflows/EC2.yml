@@ -1,0 +1,39 @@
+name: ED
+
+on:
+  workflow_call:
+
+jobs:
+
+  EC2:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v4.1.8
+      with:
+        name: programa
+
+    - uses: actions/checkout@v4
+
+    - name: Deploy to Staging Server
+      uses: easingthemes/ssh-deploy@main
+      with:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        TARGET: /home/${{ secrets.REMOTE_TARGET }}
+        EXCLUDE: "postgres-data"
+
+    - name: Executing Remote SSH Commands Using Password
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          export HOST=${{ secrets.DBHOST }}
+          export USER=${{ secrets.DBUSER }}
+          export PASSWORD=${{ secrets.DBPASSWORD }}
+          export DBNAME=${{ secrets.DBNAME }}
+          export PORT=${{ secrets.PORT }}
